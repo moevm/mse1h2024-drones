@@ -15,8 +15,14 @@ class PIDController:
     # x0 - initial state 
     # x - final state
     def Calculate (self, x0, x, dt):
+        if dt == 0:
+            return None
+        
         currErr = x - x0
-        move = self.prevMove + self.kI * currErr * dt + self.kP * (currErr - self.prevErr) + self.kD * (currErr - 2 * self.prevErr + self.prevPrevErr) / dt
+        move = self.prevMove \
+             + self.kI * currErr * dt \
+             + self.kP * (currErr - self.prevErr) \
+             + self.kD * (currErr - 2 * self.prevErr + self.prevPrevErr) / dt
         
         # update prevs 
         self.prevPrevErr = self.prevErr

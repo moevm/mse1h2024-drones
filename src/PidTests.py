@@ -1,39 +1,37 @@
-import unittest
-import PIDController as pid
+from unittest import TestCase, main
+from PIDController import PIDController
+from math import isclose
 
-
-class TestPIDController(unittest.TestCase):
+class TestPIDController(TestCase):
 
     def test_simple_case(self):
-        pctr = pid.PIDController()
-        x0 = 0
-        x = 1
-        move = pctr.Calculate(x0, x, 1)
-        self.assertEqual(move, 1.51)
+        pctr = PIDController()
+        move = pctr.Calculate(0, 1, 1)
+        self.assertTrue(isclose(move, 1.51, rel_tol=1e-7))
 
     def test_same_point(self):
-        pctr = pid.PIDController()
-        x0 = 0
-        x = 0
-        move = pctr.Calculate(x0, x, 1)
+        pctr = PIDController()
+        move = pctr.Calculate(0, 0, 1)
         self.assertEqual(move, 0)
     
     def test_negative_numbers(self):
-        pctr = pid.PIDController()
-        x0 = -1
-        x = -10
-        move = pctr.Calculate(x0, x, 1) 
-        self.assertEqual(move, -13.59)
+        pctr = PIDController()
+        move = pctr.Calculate(-1, -10, 1) 
+        self.assertTrue(isclose(move, -13.59, rel_tol=1e-7))
 
     def test_two_steps(self):
-        pctr = pid.PIDController()
+        pctr = PIDController()
         x0 = 0
         x = 10
+        x0 = pctr.Calculate(x0, x, 1)
         move = pctr.Calculate(x0, x, 1)
-        x0 = move
-        move = pctr.Calculate(x0, x, 1)
-        self.assertEqual(move, -2.800999999999999)
+        self.assertTrue(isclose(move, -2.800999999999999, rel_tol=1e-7))
+
+    def test_dt_zero(self):
+        pctr = PIDController()
+        move = pctr.Calculate(0, 1, 0)
+        self.assertEqual(move, None)
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
 
