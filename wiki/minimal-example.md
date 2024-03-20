@@ -1,20 +1,51 @@
 # Инструкции по запуску минимального примера
 
-## Необходимые приготовления
+Ниже заголовки описывают то что нужно сделать в общем виде. Содержимое же описывает инструкции конкретно для Ubuntu.
 
-Описанное ниже, к сожаление не претендует ни на что более, чем works on my machine, поскольку взаимодействие всех компонентов очень хрустальное.
+## Установить ROS 2 Iron
 
-1. Установить ROS 2.
-1. Пользуясь [подсказкой](https://gazebosim.org/docs/harmonic/ros_installation#summary-of-compatible-ros-and-gazebo-combinations) выбрать и установить совместимую версию Gazebo.
-1. Установить `ros_gz_bridge`. Его версия должна быть совместимой с установленной версией ROS 2.
-1. Создать рабочую среду ROS 2.
-1. Скопировать папку `gazebo_test` в `<workspace>/src`, где `<workspace>` -- название созданной рабочей среды.
-1. Разрешить зависимости `gazebo_test`.
-1. Собрать рабочую среду.
+Подробности описаны [по ссылке](https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html).
 
-## Непосредственно запуск
+## Установить пакет `webots-ros2`
 
-1. Запустить симуляцию `visualize_lidar` в Gazebo.
-1. Связать при помощи `ros_gz_bridge` сообщения типа `geometry_msgs/msg/Twist`, напрвляемые в канал `/model/vehicle_blue/cmd_vel`, с типом `ignition.msgs.Twist` в Gazebo.
-1. Запустить скрипт `gazebo_test.gazebo_commander`.
-1. Наслаждаться тем, как синяя тележка в симуляции поехала вперед.
+`$ sudo apt install ros-iron-webots-ros2`
+
+## Создать пакет с названием aurco_follower
+
+```
+$ source /opt/ros/iron/setup.bash
+$ ros2 pkg create --build-type ament_python --node-name simple_mavic_driver aurco_follower --dependencies rclpy std_msgs webots_ros2_driver
+```
+
+В создавшийся пакет скопировать содержимое папки `aurco_follower` репозитория, заменяя исходное содержимое пакета, а именно:
+
+- `aurco_follower`
+- `launch`
+- `resource`
+- `test`
+- `worlds`
+- `LICENSE`
+- `package.xml`
+- `setup.py`
+
+## Собрать пакет
+
+`$ colcon build`
+
+## Убедиться, что все работает
+
+В папке созданного пакета открыть 2 новых терминала.
+
+### В первом терминале запустить пакет
+
+```
+$ source install/setup.bash
+$ ros2 launch aurco_follower robot_launch.py
+```
+
+### Во втором -- отправить команду на взлет
+
+```
+$ source /opt/ros/iron/setub.bash
+$ ros2 topic pub /fly std_msgs/Bool  "data: true"
+```

@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>gazebo_test</name>
-  <version>0.0.1</version>
-  <description>Just a simple Gazebo test</description>
-  <maintainer email="simanokda.etu@gmail.com">Danila Simanok</maintainer>
+  <name>aurco_follower</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="simanokda.etu@gmail.com">dsima</maintainer>
   <license>MIT</license>
-  
-  <exec_depend>rclpy</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>webots_ros2_driver</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

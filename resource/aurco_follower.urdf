@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<robot name="Mavic Webots">
+    <webots>
+        <device reference="gps" type="GPS">
+            <ros>
+                <enabled>true</enabled>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+        <plugin type="aurco_follower.simple_mavic_driver.MavicDriver" />
+    </webots>
+</robot>

@@ -1,0 +1,39 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/dji/mavic/protos/Mavic2Pro.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.09292479494503735 -0.0012064933613238063 0.9956723993654698 3.201100558705276
+  position 8.8298891766877 1.02663147100698 2.6296900198889666
+  near 0.2
+  follow "Mavic_2_PRO"
+  followSmoothness 0.2
+}
+Background {
+  skyColor [
+    0.4 0.7 1
+  ]
+}
+DirectionalLight {
+  ambientIntensity 1
+  direction 0.1 -0.5 0.3
+}
+RectangleArena {
+  floorSize 8 8
+  floorTileSize 0.25 0.25
+}
+Mavic2Pro {
+  translation 0 0 0.1
+  name "Mavic_2_PRO"
+  controller "<extern>"
+  cameraSlot [
+    Camera {
+      width 400
+      height 240
+      near 0.2
+    }
+  ]
+}
