@@ -5,29 +5,29 @@ class PIDController:
 
     # kP, kI, kD - coefficients for PID formula
     def __init__ (self, kP = 1, kI = 0.5, kD = 0.01):
-        self.prevErr = 0
-        self.prevPrevErr = 0
-        self.prevMove = 0
+        self.prev_err = 0
+        self.prev_prev_err = 0
+        self.prev_move = 0
         self.kP = kP 
         self.kI = kI 
         self.kD = kD 
     
     # x0 - initial state 
     # x - final state
-    def Calculate (self, x0, x, dt):
+    def calculate (self, x0, x, dt):
         if dt == 0:
             return None
         
-        currErr = x - x0
-        move = self.prevMove \
-             + self.kI * currErr * dt \
-             + self.kP * (currErr - self.prevErr) \
-             + self.kD * (currErr - 2 * self.prevErr + self.prevPrevErr) / dt
+        curr_err = x - x0
+        move = self.prev_move \
+             + self.kI * curr_err * dt \
+             + self.kP * (curr_err - self.prev_err) \
+             + self.kD * (curr_err - 2 * self.prev_err + self.prev_prev_err) / dt
         
         # update prevs 
-        self.prevPrevErr = self.prevErr
-        self.prevErr = currErr
-        self.prevMove = move
+        self.prev_prev_err = self.prev_err
+        self.prev_err = curr_err
+        self.prev_move = move
         return move 
 
 # visualization for testing different coeffs
@@ -41,18 +41,18 @@ if __name__ == "__main__":
     count = 100
     
     controller = PIDController(kp, ki, kd)
-    xAxis = []
-    xArr = [] 
+    x_axis = []
+    x_arr = [] 
     x0 = 0
     for i in range(count):
         print(x0)
-        xAxis.append(i)
-        xArr.append(x0)
-        move = controller.Calculate (x0, x, dt)
+        x_axis.append(i)
+        x_arr.append(x0)
+        move = controller.calculate (x0, x, dt)
         x0 += move
 
-    xAxis = np.array(xAxis)
-    x = np.array(xArr)
-    plt.plot(xAxis, x)
+    x_axis = np.array(x_axis)
+    x = np.array(x_arr)
+    plt.plot(x_axis, x)
     plt.show()
     
