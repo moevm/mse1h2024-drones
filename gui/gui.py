@@ -19,12 +19,12 @@ window = Tk()
 window.title("aruco tracker")
 
 # buttons init
-button_start = Button(window, text="Начать демонстрацию", width=20, height=5,
-                      bg='white', fg='black', command=start_demo)
-button_end = Button(window, text="Закончить демонстрацию", width=20, height=5, 
-                    bg='white', fg='black', command=end_demo)
-button_emergency = Button(window, text="Аварийная остановка", width=20, height=5,
-                          bg='white', fg='black',command=emergency)
+button_start = Button(window, text="Начать демонстрацию", width=20, 
+                      height=5, bg='white', fg='black', command=start_demo)
+button_end = Button(window, text="Закончить демонстрацию", width=20,
+                    height=5, bg='white', fg='black', command=end_demo)
+button_emergency = Button(window, text="Аварийная остановка", width=20, 
+                          height=5, bg='white', fg='black',command=emergency)
 
 # video init
 my_label = Label(window)
