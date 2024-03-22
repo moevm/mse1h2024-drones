@@ -7,6 +7,14 @@
                 <alwaysOn>true</alwaysOn>
             </ros>
         </device>
+        <plugin type="webots_ros2_driver::Ros2IMU">
+            <enabled>true</enabled>
+            <topicName>/imu</topicName>
+            <alwaysOn>true</alwaysOn>
+            <frameName>imu_link</frameName>
+            <inertialUnitName>inertial unit</inertialUnitName>
+            <gyroName>gyro</gyroName>
+        </plugin>
         <plugin type="aurco_follower.simple_mavic_driver.MavicDriver" />
     </webots>
 </robot>
