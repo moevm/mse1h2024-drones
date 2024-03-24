@@ -1,5 +1,5 @@
 """A simple mavic driver. The only thing it can do is to takeoff or fall."""
-
+from .pid_controller import PIDController
 import math
 import rclpy
 from std_msgs.msg import Bool
@@ -19,6 +19,8 @@ def clamp(value, value_min, value_max):
 
 class MavicDriver:
     def init(self, webots_node, properties):
+        self.__pid_vertical = PIDController(3, 0.01, 200)
+
         self.__robot = webots_node.robot
         self.__timestep = int(self.__robot.getBasicTimeStep())
 
@@ -65,22 +67,18 @@ class MavicDriver:
         _, _, vz = self.__gps.getSpeedVector()
         roll_velocity, pitch_velocity, yaw_velocity = self.__gyro.getValues()
 
-        vertical_ref = LIFT_HEIGHT if self.__fly else 0
+        vertical_ref = LIFT_HEIGHT if self.__fly else 0.2
         
         roll_input = K_ROLL_P * clamp(roll, -1, 1) + roll_velocity
         pitch_input = K_PITCH_P * clamp(pitch, -1, 1) + pitch_velocity
         yaw_input = - K_YAW_P * yaw_velocity
 
-        clamped_difference_altitude = clamp(
-            vertical_ref - vertical + K_VERTICAL_OFFSET, -1, 1
-        )
-        vertical_input = K_VERTICAL_P * clamped_difference_altitude \
-            - K_VZ * vz
+        vertical_input = K_VERTICAL_THRUST  + (self.__pid_vertical.calculate (vertical, vertical_ref, 1) - vz)
 
-        m1 = K_VERTICAL_THRUST + vertical_input - roll_input + pitch_input - yaw_input
-        m2 = K_VERTICAL_THRUST + vertical_input + roll_input + pitch_input + yaw_input
-        m3 = K_VERTICAL_THRUST + vertical_input - roll_input - pitch_input + yaw_input
-        m4 = K_VERTICAL_THRUST + vertical_input + roll_input - pitch_input - yaw_input
+        m1 = vertical_input - roll_input + pitch_input - yaw_input
+        m2 = vertical_input + roll_input + pitch_input + yaw_input
+        m3 = vertical_input - roll_input - pitch_input + yaw_input
+        m4 = vertical_input + roll_input - pitch_input - yaw_input
 
         # Apply control
         self.__propellers[0].setVelocity(m1)
