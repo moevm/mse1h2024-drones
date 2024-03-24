@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from PIDController import PIDController
+from pid_controller import PIDController
 from math import isclose
 
 class TestPIDController(TestCase):
