@@ -1,8 +1,6 @@
 # ArUco-markers detect application through images
-### 1. Library requirements
-    + python3
-    + OpenCV
-### 2. The structure of the program and instructions
+
+### The structure of the program and instructions
 - There are 3 folders: 
     + ArUco_marker_images: contains images for detecting
     + test: contains test programs of the application
