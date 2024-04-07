@@ -26,6 +26,7 @@ K_PITCH_CONST = 0.14
 K_YAW_P = 0.5
 K_VZ = 0.8
 LIFT_HEIGHT = 2
+PITCH_LIFT = 0.024216
 
 def clamp(value, value_min, value_max):
     return min(max(value, value_min), value_max)
