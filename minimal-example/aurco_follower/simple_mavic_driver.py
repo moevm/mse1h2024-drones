@@ -3,9 +3,12 @@
 import math
 import rclpy
 from std_msgs.msg import Bool
+from std_msgs.msg import ByteMultiArray
+from .pid_controller import PIDController
 
 
-K_VERTICAL_THRUST = 68.5    # with this thrust, the drone lifts.
+
+K_VERTICAL_THRUST = 68.5   # with this thrust, the drone lifts.
 K_VERTICAL_OFFSET = 0.6     # Vertical offset where the robot actually targets to stabilize itself.
 K_VERTICAL_P = 3.0          # P constant of the vertical PID.
 K_ROLL_P = 50.0             # P constant of the roll PID.
@@ -13,6 +16,7 @@ K_PITCH_P = 30.0            # P constant of the pitch PID.
 K_YAW_P = 2.0
 K_VZ = 0.8
 LIFT_HEIGHT = 2
+PITCH_LIFT = 0.024216
 
 def clamp(value, value_min, value_max):
     return min(max(value, value_min), value_max)
@@ -21,6 +25,12 @@ class MavicDriver:
     def init(self, webots_node, properties):
         self.__robot = webots_node.robot
         self.__timestep = int(self.__robot.getBasicTimeStep())
+
+        # Pid controllers
+        self.__vertical_pid = PIDController(10, 0.02, 200)
+        self.__roll_pid = PIDController(10, 0, 50)
+        self.__pitch_pid = PIDController(10, 0, 50)
+        self.__yaw_pid = PIDController(0.5, 0, 0)
 
         # Sensors
         self.__gps = self.__robot.getDevice('gps')
@@ -52,30 +62,37 @@ class MavicDriver:
         rclpy.init(args=None)
         self.__node = rclpy.create_node('simple_mavic_driver')
         self.__node.create_subscription(Bool, 'fly', self.__fly_callback, 1)
+        self.__publisher = self.__node.create_publisher(ByteMultiArray, "camera", 1)
 
     def __fly_callback(self, fly_msg):
         self.__fly = fly_msg.data
 
-    def step(self):
-        rclpy.spin_once(self.__node, timeout_sec=0)
+    def apply_pid (self, target_z, target_roll, target_pitch, target_yaw, dt = 1):
+        file = open ("data.txt", "a")
 
         # Read sensors
         roll, pitch, yaw = self.__imu.getRollPitchYaw()
         _, _, vertical = self.__gps.getValues()
-        _, _, vz = self.__gps.getSpeedVector()
-        roll_velocity, pitch_velocity, yaw_velocity = self.__gyro.getValues()
 
-        vertical_ref = LIFT_HEIGHT if self.__fly else 0
-        
-        roll_input = K_ROLL_P * clamp(roll, -1, 1) + roll_velocity
-        pitch_input = K_PITCH_P * clamp(pitch, -1, 1) + pitch_velocity
+        z_output = self.__vertical_pid.calculate (vertical, target_z, dt)
+        roll_output = -self.__roll_pid.calculate(roll, target_roll, dt) + 0.06
+        pitch_output = -self.__pitch_pid.calculate(pitch, target_pitch, dt) + 0.14
+        yaw_output = self.__yaw_pid.calculate(yaw, target_yaw, dt)
+
+        return z_output, roll_output, pitch_output, yaw_output
+
+    def step(self):
+        rclpy.spin_once(self.__node, timeout_sec=0)
+        self.__publisher.publish (self.__camera.getImage())
+
+        _, _, yaw_velocity = self.__gyro.getValues()
+
+        vertical_ref = LIFT_HEIGHT if self.__fly else 0.6
+
+        vertical_input, roll_input, pitch_input, yaw_input = \
+            self.apply_pid (vertical_ref, 0, 0, 0)
+
         yaw_input = - K_YAW_P * yaw_velocity
-
-        clamped_difference_altitude = clamp(
-            vertical_ref - vertical + K_VERTICAL_OFFSET, -1, 1
-        )
-        vertical_input = K_VERTICAL_P * clamped_difference_altitude \
-            - K_VZ * vz
 
         m1 = K_VERTICAL_THRUST + vertical_input - roll_input + pitch_input - yaw_input
         m2 = K_VERTICAL_THRUST + vertical_input + roll_input + pitch_input + yaw_input
