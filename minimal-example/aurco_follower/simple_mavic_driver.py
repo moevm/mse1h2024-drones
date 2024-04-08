@@ -6,17 +6,25 @@ from std_msgs.msg import Bool
 from std_msgs.msg import ByteMultiArray
 from .pid_controller import PIDController
 
-
-
 K_VERTICAL_THRUST = 68.5   # with this thrust, the drone lifts.
 K_VERTICAL_OFFSET = 0.6     # Vertical offset where the robot actually targets to stabilize itself.
-K_VERTICAL_P = 3.0          # P constant of the vertical PID.
-K_ROLL_P = 50.0             # P constant of the roll PID.
-K_PITCH_P = 30.0            # P constant of the pitch PID.
-K_YAW_P = 2.0
+K_VERTICAL_P = 10.0 
+K_VERTICAL_I = 0.02
+K_VERTICAL_D = 200
+
+K_ROLL_P = 10.0
+K_ROLL_I = 0
+K_ROLL_D = 50
+K_ROLL_CONST = 0.06
+
+K_PITCH_P = 10.0   
+K_PITCH_I = 0
+K_PITCH_D = 50    
+K_PITCH_CONST = 0.14    
+
+K_YAW_P = 0.5
 K_VZ = 0.8
 LIFT_HEIGHT = 2
-PITCH_LIFT = 0.024216
 
 def clamp(value, value_min, value_max):
     return min(max(value, value_min), value_max)
@@ -27,10 +35,10 @@ class MavicDriver:
         self.__timestep = int(self.__robot.getBasicTimeStep())
 
         # Pid controllers
-        self.__vertical_pid = PIDController(10, 0.02, 200)
-        self.__roll_pid = PIDController(10, 0, 50)
-        self.__pitch_pid = PIDController(10, 0, 50)
-        self.__yaw_pid = PIDController(0.5, 0, 0)
+        self.__vertical_pid = PIDController(K_VERTICAL_P, K_VERTICAL_I, K_PITCH_D)
+        self.__roll_pid = PIDController(K_ROLL_P, K_ROLL_I, K_ROLL_D)
+        self.__pitch_pid = PIDController(K_PITCH_P, K_PITCH_I, K_PITCH_D)
+        self.__yaw_pid = PIDController(K_YAW_P, 0, 0)
 
         # Sensors
         self.__gps = self.__robot.getDevice('gps')
@@ -68,15 +76,14 @@ class MavicDriver:
         self.__fly = fly_msg.data
 
     def apply_pid (self, target_z, target_roll, target_pitch, target_yaw, dt = 1):
-        file = open ("data.txt", "a")
 
         # Read sensors
         roll, pitch, yaw = self.__imu.getRollPitchYaw()
         _, _, vertical = self.__gps.getValues()
 
         z_output = self.__vertical_pid.calculate (vertical, target_z, dt)
-        roll_output = -self.__roll_pid.calculate(roll, target_roll, dt) + 0.06
-        pitch_output = -self.__pitch_pid.calculate(pitch, target_pitch, dt) + 0.14
+        roll_output = -self.__roll_pid.calculate(roll, target_roll, dt) + K_ROLL_CONST
+        pitch_output = -self.__pitch_pid.calculate(pitch, target_pitch, dt) + K_PITCH_CONST
         yaw_output = self.__yaw_pid.calculate(yaw, target_yaw, dt)
 
         return z_output, roll_output, pitch_output, yaw_output

@@ -33,22 +33,22 @@ class PIDController:
 # visualization for testing different coeffs
 if __name__ == "__main__":
     # paremetrs
-    kp = 0.1
-    ki = 0.05
-    kd = 0.001 
-    dt = 1
+    KP = 0.1
+    KI = 0.05
+    KD = 0.001 
+    DT = 1
+    COUNT = 100
     x = 1
-    count = 100
     
-    controller = PIDController(kp, ki, kd)
+    controller = PIDController(KP, KI, KD)
     x_axis = []
     x_arr = [] 
     x0 = 0
-    for i in range(count):
+    for i in range(COUNT):
         print(x0)
         x_axis.append(i)
         x_arr.append(x0)
-        move = controller.calculate (x0, x, dt)
+        move = controller.calculate (x0, x, DT)
         x0 += move
 
     x_axis = np.array(x_axis)
