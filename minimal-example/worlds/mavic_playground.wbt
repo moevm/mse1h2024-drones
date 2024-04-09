@@ -6,8 +6,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.15765599215740878 -0.04617695386356658 0.9864138467543655 3.723997349472798
-  position 2.700358818647469 1.0107284148606075 0.9602602300432266
+  orientation -0.14284666532660134 -0.03706605492413076 0.9890505233694745 3.665977768298139
+  position 2.776397565490547 0.8744982933123705 0.8824563863123033
   near 0.2
   follow "Mavic_2_PRO"
   followSmoothness 0.2
@@ -24,6 +24,11 @@ DirectionalLight {
 RectangleArena {
   floorSize 8 8
   floorTileSize 0.25 0.25
+}
+Robot {
+  name "Mavic_Supervisor"
+  controller "<extern>"
+  supervisor TRUE
 }
 Mavic2Pro {
   translation 1 -0.18 0.1
