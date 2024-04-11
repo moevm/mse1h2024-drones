@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<robot name="Playground Supervisor">
+    <webots>
+        <plugin type="aruco_follower.playground_supervisor.PlaygroundSupervisor" />
+    </webots>
+</robot>

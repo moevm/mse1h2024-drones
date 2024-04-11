@@ -10,27 +10,15 @@
 
 `$ sudo apt install ros-iron-webots-ros2`
 
-## Создать пакет с названием aurco_follower
-
-```
-$ source /opt/ros/iron/setup.bash
-$ ros2 pkg create --build-type ament_python --node-name simple_mavic_driver aurco_follower --dependencies rclpy std_msgs webots_ros2_driver
-```
-
-В создавшийся пакет скопировать содержимое папки `aurco_follower` репозитория, заменяя исходное содержимое пакета, а именно:
-
-- `aurco_follower`
-- `launch`
-- `resource`
-- `test`
-- `worlds`
-- `LICENSE`
-- `package.xml`
-- `setup.py`
-
 ## Собрать пакет
 
-`$ colcon build`
+Действия ниже показаны от корня проекта.
+
+```
+$ cd aruco_follower_ws/
+$ source /opt/ros/iron/setup.bash
+$ colcon build
+```
 
 ## Убедиться, что все работает
 
@@ -46,6 +34,6 @@ $ ros2 launch aurco_follower robot_launch.py
 ### Во втором -- отправить команду на взлет
 
 ```
-$ source /opt/ros/iron/setub.bash
-$ ros2 topic pub /fly std_msgs/Bool  "data: true"
+$ source /opt/ros/iron/setup.bash
+$ ros2 topic pub /fly std_msgs/Bool "data: true"
 ```

@@ -5,11 +5,11 @@ import rclpy
 from std_msgs.msg import Bool
 
 
-K_VERTICAL_THRUST = 68.5    # with this thrust, the drone lifts.
-K_VERTICAL_OFFSET = 0.6     # Vertical offset where the robot actually targets to stabilize itself.
-K_VERTICAL_P = 3.0          # P constant of the vertical PID.
-K_ROLL_P = 50.0             # P constant of the roll PID.
-K_PITCH_P = 30.0            # P constant of the pitch PID.
+K_VERTICAL_THRUST = 68.5
+K_VERTICAL_OFFSET = 0.6
+K_VERTICAL_P = 3.0
+K_ROLL_P = 50.0
+K_PITCH_P = 30.0
 K_YAW_P = 2.0
 K_VZ = 0.8
 LIFT_HEIGHT = 2

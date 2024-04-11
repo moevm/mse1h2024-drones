@@ -1,0 +1,64 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/dji/mavic/protos/Mavic2Pro.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.14284666532660134 -0.03706605492413076 0.9890505233694745 3.665977768298139
+  position 2.776397565490547 0.8744982933123705 0.8824563863123033
+  near 0.2
+  follow "Mavic_2_PRO"
+  followSmoothness 0.2
+}
+Background {
+  skyColor [
+    0.4 0.7 1
+  ]
+}
+DirectionalLight {
+  ambientIntensity 1
+  direction 0.1 -0.5 0.3
+}
+RectangleArena {
+  floorSize 8 8
+  floorTileSize 0.25 0.25
+}
+DEF DRONE Mavic2Pro {
+  translation 1 -0.18 0.1
+  rotation 0 0 1 3.141592653589793
+  name "Mavic_2_PRO"
+  controller "<extern>"
+  cameraSlot [
+    Camera {
+      width 400
+      height 240
+      near 0.2
+    }
+  ]
+}
+DEF MARKER Solid {
+  translation -2 -0.08 0.1
+  rotation 0 -1 0 0.523595
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColorMap ImageTexture {
+          url [
+            "aruco-marker-ID=228.png"
+          ]
+        }
+      }
+      geometry Box {
+        size 0.01 0.2 0.2
+      }
+    }
+  ]
+  name "Marker"
+}
+Robot {
+  name "Mavic_Supervisor"
+  controller "<extern>"
+  supervisor TRUE
+}
