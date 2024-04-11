@@ -9,7 +9,9 @@ def main():
     tello = Tello()
 
     # Connect to the drone
-    tello.connect()
+    if not tello.connect():
+        print("Failed to connect to the Tello drone")
+        return
 
 
     # Folder to save results
