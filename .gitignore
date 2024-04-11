@@ -1,1 +1,7 @@
-/src/__pycache__/
+# colcon created build files
+aruco_follower_ws/build/
+aruco_follower_ws/install/
+aruco_follower_ws/log/
+
+# python specific
+*__pycache__/

@@ -3,6 +3,7 @@
 import math
 import rclpy
 from std_msgs.msg import Bool
+from std_msgs.msg import Int8
 from std_msgs.msg import ByteMultiArray
 from .pid_controller import PIDController
 
@@ -69,7 +70,7 @@ class MavicDriver:
         # ROS interface
         rclpy.init(args=None)
         self.__node = rclpy.create_node('simple_mavic_driver')
-        self.__node.create_subscription(Bool, 'fly', self.__fly_callback, 1)
+        self.__node.create_subscription(Int8, 'fly', self.__fly_callback, 1)
         self.__publisher = self.__node.create_publisher(ByteMultiArray, "camera", 1)
 
     def __fly_callback(self, fly_msg):

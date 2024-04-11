@@ -15,6 +15,6 @@
             <inertialUnitName>inertial unit</inertialUnitName>
             <gyroName>gyro</gyroName>
         </plugin>
-        <plugin type="aurco_follower.simple_mavic_driver.MavicDriver" />
+        <plugin type="aruco_follower.simple_mavic_driver.MavicDriver" />
     </webots>
 </robot>
