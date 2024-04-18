@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test_pid:
+  test_modules:
     strategy:
       fail-fast: false
     name: Test
@@ -21,8 +21,13 @@ jobs:
         with:
           python-version: 3.10.12
       
-      - name: Install Dependencies
+      - name: Test PID Controller
         run: |
-          cd pid_controller
+          cd ~/pid_controller
           pip install -r requirements.txt
           python pid_tests.py
+      
+      - name: Test GUI
+        run: |
+          cd ~/gui
+          pip install -r requirements.txt
