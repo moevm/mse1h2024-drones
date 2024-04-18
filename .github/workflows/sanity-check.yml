@@ -1,0 +1,28 @@
+name: Sanity Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test_pid:
+    strategy:
+      fail-fast: false
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+    
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.12
+      
+      - name: Install Dependencies
+        run: |
+          cd pid_controller
+          pip install -r requirements.txt
+          python pid_tests.py
