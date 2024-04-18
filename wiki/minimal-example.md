@@ -32,6 +32,12 @@ $ ros2 pkg create --build-type ament_python --node-name simple_mavic_driver aurc
 
 `$ colcon build`
 
+## Тестирование 
+
+Запуск тестов
+
+`$ colcon test`
+
 ## Убедиться, что все работает
 
 В папке созданного пакета открыть 2 новых терминала.
