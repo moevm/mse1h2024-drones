@@ -43,3 +43,12 @@ jobs:
           sudo apt update && sudo apt upgrade -y
           sudo apt install ros-iron-ros-base -y
           sudo apt install ros-iron-webots-ros2 -y
+      
+      - name: Build Aruco Follower
+        run: |
+          cd aruco_follower_ws/
+          sudo rosdep init
+          rosdep update
+          rosdep install -i --from-path src --rosdistro iron -y
+          source /opt/ros/iron/setup.bash
+          colcon build
