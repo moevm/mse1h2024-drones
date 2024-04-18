@@ -16,13 +16,12 @@ class ArucoDetector(Node):
         super().__init__('detect_aruco')
         self.subscription = self.create_subscription(
             Image,
-            '/camera',  # Topic nhận hình ảnh từ camera
+            '/camera',  
             self.image_callback,
-            10
-        )
-        self.publisher = self.create_publisher(Image, '/marked', 10)  # Topic gửi hình ảnh đã được xử lý
+            10) #take image from topic /Image
+        self.publisher = self.create_publisher(Image, '/marked', 10)  # Send processed image to /marked
         self.bridge = CvBridge()
-        self.marker_publisher = self.create_publisher(Marker, '/marker', 10)
+        self.marker_publisher = self.create_publisher(Marker, '/marker', 10) # Send coordinates to /marker
 
     def image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
@@ -32,7 +31,7 @@ class ArucoDetector(Node):
 
     def detect_aruco_markers(self, image):
         # Camera dimensions and calibration parameters (default values)
-        # TODO: Thay thế giá trị mặc định bằng thông số hiệu chỉnh camera thực tế
+        # need to change specifications by camera drone
         focal_length_x = 640
         focal_length_y = 640
         principal_point_x = 320
@@ -53,7 +52,7 @@ class ArucoDetector(Node):
 
         # Draw markers and coordinate axes
         if ids is not None:
-            marked_image = image.copy()  # Tạo bản sao để tránh làm thay đổi ảnh gốc
+            marked_image = image.copy()  
             image = aruco.drawDetectedMarkers(image, corners, ids)
 
             # Estimate pose for each marker
