@@ -1,31 +1,31 @@
-import tkinter as tk
-import cv2
+from tkinter import Tk, Label, Button, BOTTOM
+from cv2 import cvtColor, COLOR_BGR2RGB
 from PIL import Image, ImageTk
 from sensor_msgs.msg import Image as ROSImage
 from std_msgs.msg import Int8, Bool
 from cv_bridge import CvBridge
-import rclpy
+from rclpy import create_node, spin, shutdown, init
 from rclpy.node import Node
-
+from threading import Thread
 
 class DroneCameraSubscriber(Node):
     def __init__(self):
         super().__init__('drone_camera_subscriber')
         self.image_subscriber = self.create_subscription(
-            ROSImage, 'Mavic_2_PRO/camera/image_color', self.image_callback, 10)
+            ROSImage, 'Mavic_2_PRO/camera/image_color', self.image_callback, 10) # заменить топик на /marked
         self.bridge = CvBridge()
         self.image_subscriber
 
     def image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        cv_image = cvtColor(cv_image, COLOR_BGR2RGB)
         self.display_image(cv_image)
 
     def display_image(self, cv_image):
         image = Image.fromarray(cv_image)
         image = ImageTk.PhotoImage(image)
         if not hasattr(self, 'panel'):
-            self.panel = tk.Label(image=image)
+            self.panel = Label(image=image)
             self.panel.image = image
             self.panel.pack(side="top",anchor="n")
         else:
@@ -37,28 +37,26 @@ class DroneGui:
         self.root = root
         self.root.title("aruco tracker")
 
-        self.button_start = tk.Button(root, text="Начать демонстрацию", width=20, 
+        self.button_start = Button(root, text="Начать демонстрацию", width=20, 
                             height=5, bg='white', fg='black', command=self.start_demo)
 
-        self.button_end = tk.Button(root, text="Закончить демонстрацию", width=20,
+        self.button_end = Button(root, text="Закончить демонстрацию", width=20,
                             height=5, bg='white', fg='black', command=self.end_demo)
 
-        self.button_emergency = tk.Button(root, text="Аварийная остановка", width=20, 
+        self.button_emergency = Button(root, text="Аварийная остановка", width=20, 
                                 height=5, bg='white', fg='black',command=self.emergency)
                 
-        self.button_emergency.pack(side=tk.BOTTOM)
-        self.button_end.pack(side=tk.BOTTOM)
-        self.button_start.pack(side=tk.BOTTOM)
+        self.button_emergency.pack(side=BOTTOM)
+        self.button_end.pack(side=BOTTOM)
+        self.button_start.pack(side=BOTTOM)
 
-        self.node = rclpy.create_node('publisher')
+        self.node = create_node('publisher')
         self.publisher = self.node.create_publisher(Int8, "fly",10)
         self.camera_subscriber = DroneCameraSubscriber()
-        #rclpy.spin(self.camera_subscriber)
        
 
     def start_demo(self):
         print("Start demo")
-        #self.activate_camera()
         self.fly_publisher(1)
 
     def end_demo(self):
@@ -67,7 +65,6 @@ class DroneGui:
 
     def emergency(self):
         print("Emergency stop")
-        self.activate_camera()
         self.fly_publisher(2)
 
     def fly_publisher(self, fly):
@@ -75,12 +72,12 @@ class DroneGui:
         msg.data = fly
         self.publisher.publish(msg)
 
-    def activate_camera(self):
-        rclpy.spin_once(self.camera_subscriber)
         
 if __name__ == "__main__":
-    rclpy.init()
-    root = tk.Tk()
+    init()
+    root = Tk()
     gui = DroneGui(root)
+    spin_thread=Thread(target=spin, args=(gui.camera_subscriber,))
+    spin_thread.start()
     root.mainloop()
-    rclpy.shutdown()
+    shutdown()

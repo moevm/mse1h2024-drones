@@ -56,9 +56,19 @@ class MavicDriver:
     def __fly_callback(self, fly_msg):
         self.__fly = fly_msg.data
 
+    def emergency(self):
+        self.__propellers[0].setVelocity(0)
+        self.__propellers[1].setVelocity(0)
+        self.__propellers[2].setVelocity(0)
+        self.__propellers[3].setVelocity(0)
+
     def step(self):
         rclpy.spin_once(self.__node, timeout_sec=0)
 
+        if self.__fly == 2:
+            self.emergency()
+            return
+        
         # Read sensors
         roll, pitch, yaw = self.__imu.getRollPitchYaw()
         _, _, vertical = self.__gps.getValues()
