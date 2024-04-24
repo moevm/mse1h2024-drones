@@ -1,0 +1,54 @@
+name: Sanity Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test_modules:
+    strategy:
+      fail-fast: false
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+    
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.10.12
+      
+      - name: Test PID Controller
+        run: |
+          cd pid_controller
+          pip install -r requirements.txt
+          python pid_tests.py
+      
+      - name: Test GUI
+        run: |
+          cd gui
+          pip install -r requirements.txt
+      
+      - name: Install ROS 2
+        run: |
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository universe
+          sudo apt update && sudo apt install curl -y
+          sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+          sudo apt update && sudo apt install ros-dev-tools -y
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install ros-iron-ros-base -y
+          sudo apt install ros-iron-webots-ros2 -y
+      
+      - name: Build Aruco Follower
+        run: |
+          cd aruco_follower_ws/
+          sudo rosdep init
+          rosdep update
+          rosdep install -i --from-path src --rosdistro iron -y
+          source /opt/ros/iron/setup.bash
+          colcon build
