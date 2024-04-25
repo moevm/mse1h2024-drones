@@ -47,7 +47,7 @@ class ArucoDetector(Node):
         dist_coeffs = np.array([[0], [0], [0], [0], [0]], dtype=np.float32)
 
         # Create ArUco detector object
-        aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
+        aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_50)
         parameters = aruco.DetectorParameters_create()
 
         # Detect ArUco markers
