@@ -2,7 +2,7 @@
 
 import math
 import rclpy
-from std_msgs.msg import Bool
+from std_msgs.msg import Int8
 
 
 K_VERTICAL_THRUST = 68.5
@@ -51,21 +51,31 @@ class MavicDriver:
         # ROS interface
         rclpy.init(args=None)
         self.__node = rclpy.create_node('simple_mavic_driver')
-        self.__node.create_subscription(Bool, 'fly', self.__fly_callback, 1)
+        self.__node.create_subscription(Int8, 'fly', self.__fly_callback, 1)
 
     def __fly_callback(self, fly_msg):
         self.__fly = fly_msg.data
 
+    def emergency(self):
+        self.__propellers[0].setVelocity(0)
+        self.__propellers[1].setVelocity(0)
+        self.__propellers[2].setVelocity(0)
+        self.__propellers[3].setVelocity(0)
+
     def step(self):
         rclpy.spin_once(self.__node, timeout_sec=0)
 
+        if self.__fly == 2:
+            self.emergency()
+            return
+        
         # Read sensors
         roll, pitch, yaw = self.__imu.getRollPitchYaw()
         _, _, vertical = self.__gps.getValues()
         _, _, vz = self.__gps.getSpeedVector()
         roll_velocity, pitch_velocity, yaw_velocity = self.__gyro.getValues()
 
-        vertical_ref = LIFT_HEIGHT if self.__fly else 0
+        vertical_ref = LIFT_HEIGHT if self.__fly == 1 else 0
         
         roll_input = K_ROLL_P * clamp(roll, -1, 1) + roll_velocity
         pitch_input = K_PITCH_P * clamp(pitch, -1, 1) + pitch_velocity
