@@ -52,3 +52,6 @@ jobs:
           rosdep install -i --from-path src --rosdistro iron -y
           source /opt/ros/iron/setup.bash
           colcon build
+      - name: Run tests
+        run: |
+          colcon test
