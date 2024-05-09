@@ -58,3 +58,7 @@ python gui.py
 ```
 
 [Что должно быть, если все хорошо](https://drive.google.com/file/d/1lYbNuMoYIauSJVRvCgQhj5nWbGn3XOIE/view?usp=sharing)
+
+### Презентация
+
+https://docs.google.com/presentation/d/1rUaw3MloKnwjV1p0Nc5rlmjW4V7hkWq3fldU29A1Iws/edit?usp=sharing
