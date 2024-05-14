@@ -4,14 +4,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Parquetry.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/BrushedAluminium.proto"
 
 WorldInfo {
 }
 Viewpoint {
   orientation -0.09393817637660586 0.039071535860785794 0.9948110544744249 2.356981980839854
-  position 7.7842072477364574 -8.023422910447556 2.390974216973994
+  position 9.149836221851833 -9.396981297908455 2.7600645652333915
 }
 TexturedBackground {
 }
@@ -21,14 +20,6 @@ Floor {
   appearance Parquetry {
     type "dark strip"
   }
-}
-RectangleArena {
-  translation 0 0 0.05
-  name "chess board"
-  floorSize 0.3 0.4
-  floorTileSize 0.1 0.1
-  wallThickness 0.001
-  wallHeight 0.001
 }
 Robot {
   translation 0 0 2
@@ -70,4 +61,21 @@ Solid {
     }
   ]
   name "marker"
+}
+Solid {
+  translation 0.36 0 0.04
+  children [
+    Shape {
+      appearance Appearance {
+        texture ImageTexture {
+          url [
+            "chessboard.png"
+          ]
+        }
+      }
+      geometry Plane {
+      }
+    }
+  ]
+  name "chessboard"
 }
