@@ -12,32 +12,38 @@ def main():
         os.makedirs(results_folder)
 
     # Camera dimensions and calibration parameters (default values)
-    focal_length_x = 640
-    focal_length_y = 640
-    principal_point_x = 320
-    principal_point_y = 240
-
-
-
-    cam_matrix = np.array([[focal_length_x, 0, principal_point_x],
-                       [0, focal_length_y, principal_point_y],
-                       [0, 0, 1]], dtype=np.float32)
+    focal_length_x = 880.76258376
+    focal_length_y = 879.79177239
+    principal_point_x = 331.61928164
+    principal_point_y = 185.48140499
+    
+    cam_matrix = np.array([[focal_length_x, 0, principal_point_x],[0, focal_length_y, principal_point_y],[0, 0, 1]], dtype=np.float32)
 
     # Distortion coefficients
-    dist_coeffs = np.array([[0], [0], [0], [0], [0]], dtype=np.float32)
+    dist_coeffs = np.array([[-2.12846470e-01], [3.91151145e+00], [-1.82790992e-04], [1.48727617e-03], [-2.32401748e+01]], dtype=np.float32)
+
+
+
+
+
 
     # Create ArUco detector object
-    aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
-    parameters = aruco.DetectorParameters_create()
+    marker_size = 5
+    dictionary_values = 1000 # Number of markers in the dictionary
+
+    # Create a custom dictionary
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
+    parameters = aruco.DetectorParameters()
 
     # Loop through images in the folder
     for filename in os.listdir(folder_path):
         # Read image
         image_path = os.path.join(folder_path, filename)
         frame = cv2.imread(image_path)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Detect ArUco markers
-        corners, ids, _ = aruco.detectMarkers(frame, aruco_dict, parameters=parameters)
+        corners, ids, _ = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
 
         # Draw markers and coordinate axes
         if ids is not None:
@@ -49,8 +55,8 @@ def main():
             if rvecs is not None and tvecs is not None:
                 for i in range(len(rvecs)):
                     # Draw coordinate axes
-                    frame = aruco.drawAxis(frame, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)
-
+                    frame = cv2.drawFrameAxes(frame, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)
+                     
                     # Get marker position
                     marker_position = tvecs[i][0]
 

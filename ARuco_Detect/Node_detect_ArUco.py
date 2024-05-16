@@ -35,20 +35,26 @@ class ArucoDetector(Node):
         # Camera dimensions and calibration parameters (default values)
         # need to change specifications by camera drone
 
-        focal_length_x = 640
-        focal_length_y = 640
-        principal_point_x = 320
-        principal_point_y = 240
+	focal_length_x = 880.76258376
+    	focal_length_y = 879.79177239
+    	principal_point_x = 331.61928164
+    	principal_point_y = 185.48140499
         cam_matrix = np.array([[focal_length_x, 0, principal_point_x],
                                [0, focal_length_y, principal_point_y],
                                [0, 0, 1]], dtype=np.float32)
 
         # Distortion coefficients (default values)
-        dist_coeffs = np.array([[0], [0], [0], [0], [0]], dtype=np.float32)
+        dist_coeffs = np.array([[-2.12846470e-01], [3.91151145e+00], [-1.82790992e-04], [1.48727617e-03], [-2.32401748e+01]], dtype=np.float32)
 
-        # Create ArUco detector object
-        aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_1000)
-        parameters = aruco.DetectorParameters_create()
+	# Create ArUco detector object
+    	marker_size = 5
+    	dictionary_values = 1000 # Number of markers in the dictionary
+
+    	# Create a custom dictionary
+    	aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
+    	parameters = aruco.DetectorParameters()
+    	
+   
 
         # Detect ArUco markers
         corners, ids, _ = aruco.detectMarkers(image, aruco_dict, parameters=parameters)
@@ -74,7 +80,7 @@ class ArucoDetector(Node):
                     # Draw marker ID and coordinate axes
                     cv2.putText(image, f"ID: {ids[i]}", (int(corners[i][0][0][0]), int(corners[i][0][0][1])),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                    cv2.drawAxis(marked_image, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)
+                    cv2.drawFrameAxes(marked_image, cam_matrix, dist_coeffs, rvecs[i], tvecs[i], 0.1)
                 return marked_image
         return image
 
