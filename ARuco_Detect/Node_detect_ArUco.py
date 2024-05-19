@@ -1,10 +1,9 @@
-
 import cv2
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from std_msgs.msg import Int32MultiArray
+from std_msgs.msg import Float32MultiArray
 import cv2.aruco as aruco
 import numpy as np
 
@@ -24,7 +23,7 @@ class ArucoDetector(Node):
 
         self.publisher = self.create_publisher(Image, '/marked', 10)  # Send processed image to /marked
         self.bridge = CvBridge()
-        self.marker_publisher = self.create_publisher(Int32MultiArray, '/marker', 10) # Send coordinates to /marker
+        self.marker_publisher = self.create_publisher(Float32MultiArray, '/marker', 10) # Send coordinates to /marker
 
     def image_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
@@ -70,7 +69,7 @@ class ArucoDetector(Node):
                     marker_position = tvecs[i][0]
 
                     # Create and publish marker message
-                    msg = Int32MultiArray()
+                    msg = Float32MultiArray()
                     msg.data = marker_position
                     self.marker_publisher.publish(msg)
 
