@@ -21,6 +21,7 @@ class ArucoDetector(Node):
             '/camera',  
             self.image_callback,
             10) #take image from topic /Image
+
         self.publisher = self.create_publisher(Image, '/marked', 10)  # Send processed image to /marked
         self.bridge = CvBridge()
         self.marker_publisher = self.create_publisher(Int32MultiArray, '/marker', 10) # Send coordinates to /marker
@@ -32,28 +33,25 @@ class ArucoDetector(Node):
         self.publisher.publish(marked_msg)
 
     def detect_aruco_markers(self, image):
-        # Camera dimensions and calibration parameters (default values)
-        # need to change specifications by camera drone
 
-	focal_length_x = 880.76258376
-    	focal_length_y = 879.79177239
-    	principal_point_x = 331.61928164
-    	principal_point_y = 185.48140499
+        # Camera dimensions and calibration parameters
+        focal_length_x = 880.76258376
+        focal_length_y = 879.79177239
+        principal_point_x = 331.61928164
+        principal_point_y = 185.48140499
         cam_matrix = np.array([[focal_length_x, 0, principal_point_x],
                                [0, focal_length_y, principal_point_y],
                                [0, 0, 1]], dtype=np.float32)
 
         # Distortion coefficients (default values)
         dist_coeffs = np.array([[-2.12846470e-01], [3.91151145e+00], [-1.82790992e-04], [1.48727617e-03], [-2.32401748e+01]], dtype=np.float32)
+        # Create ArUco detector object
+        marker_size = 5
+        dictionary_values = 1000 # Number of markers in the dictionary
 
-	# Create ArUco detector object
-    	marker_size = 5
-    	dictionary_values = 1000 # Number of markers in the dictionary
-
-    	# Create a custom dictionary
-    	aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
-    	parameters = aruco.DetectorParameters()
-    	
+        # Create a custom dictionary
+        aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
+        parameters = aruco.DetectorParameters()
    
 
         # Detect ArUco markers
