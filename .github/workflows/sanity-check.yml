@@ -54,3 +54,9 @@ jobs:
           colcon build
           colcon test
           cat build/aruco_follower/pytest.xml
+
+      - name: Code results 
+        uses: actions/upload-artifact@v4
+        with:
+          name: code_report
+          path: build/*
