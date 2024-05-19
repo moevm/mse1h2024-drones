@@ -60,4 +60,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: code_report
-          path: build/*
+          path: aruco_follower_ws/build/*
