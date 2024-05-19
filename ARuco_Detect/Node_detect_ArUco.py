@@ -45,17 +45,16 @@ class ArucoDetector(Node):
 
         # Distortion coefficients (default values)
         dist_coeffs = np.array([[-2.12846470e-01], [3.91151145e+00], [-1.82790992e-04], [1.48727617e-03], [-2.32401748e+01]], dtype=np.float32)
-        # Create ArUco detector object
-        marker_size = 5
-        dictionary_values = 1000 # Number of markers in the dictionary
+       
 
         # Create a custom dictionary
         aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_5X5_1000)
         parameters = aruco.DetectorParameters()
    
 
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Detect ArUco markers
-        corners, ids, _ = aruco.detectMarkers(image, aruco_dict, parameters=parameters)
+        corners, ids, _ = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
 
         # Draw markers and coordinate axes
         if ids is not None:
