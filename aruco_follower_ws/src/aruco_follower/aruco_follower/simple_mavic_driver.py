@@ -4,7 +4,7 @@ import math
 import rclpy
 from std_msgs.msg import Bool
 from std_msgs.msg import Int8
-from std_msgs.msg import ByteMultiArray
+from sensor_msgs.msg import Image
 from .pid_controller import PIDController
 
 K_VERTICAL_THRUST = 68.5   # with this thrust, the drone lifts.
@@ -101,7 +101,9 @@ class MavicDriver:
 
     def step(self):
         rclpy.spin_once(self.__node, timeout_sec=0)
-        self.__publisher.publish (self.__camera.getImage())
+        image= Image()
+        image.data = self.__camera.getImage()
+        self.__publisher.publish(image)
 
         _, _, yaw_velocity = self.__gyro.getValues()
 
