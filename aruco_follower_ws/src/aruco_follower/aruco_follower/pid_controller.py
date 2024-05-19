@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class PIDController:
 
@@ -29,30 +28,3 @@ class PIDController:
         self.prev_err = curr_err
         self.prev_move = move
         return move 
-
-# visualization for testing different coeffs
-if __name__ == "__main__":
-    # paremetrs
-    KP = 0.1
-    KI = 0.05
-    KD = 0.001 
-    DT = 1
-    COUNT = 100
-    x = 1
-    
-    controller = PIDController(KP, KI, KD)
-    x_axis = []
-    x_arr = [] 
-    x0 = 0
-    for i in range(COUNT):
-        print(x0)
-        x_axis.append(i)
-        x_arr.append(x0)
-        move = controller.calculate (x0, x, DT)
-        x0 += move
-
-    x_axis = np.array(x_axis)
-    x = np.array(x_arr)
-    plt.plot(x_axis, x)
-    plt.show()
-    
