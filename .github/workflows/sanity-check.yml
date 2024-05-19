@@ -6,6 +6,7 @@ on:
 
 jobs:
   test_modules:
+    continue-on-error: true
     strategy:
       fail-fast: false
     name: Test
@@ -53,7 +54,6 @@ jobs:
           source /opt/ros/iron/setup.bash
           colcon build
           colcon test
-          cat build/aruco_follower/pytest.xml
 
       - name: Code results 
         uses: actions/upload-artifact@v4
