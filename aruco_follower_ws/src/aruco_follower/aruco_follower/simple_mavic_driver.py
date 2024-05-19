@@ -71,7 +71,7 @@ class MavicDriver:
         rclpy.init(args=None)
         self.__node = rclpy.create_node('simple_mavic_driver')
         self.__node.create_subscription(Int8, 'fly', self.__fly_callback, 1)
-        self.__publisher = self.__node.create_publisher(ByteMultiArray, "camera", 1)
+        self.__publisher = self.__node.create_publisher(Image, "camera", 1)
 
     def __fly_callback(self, fly_msg):
         self.__fly = fly_msg.data
