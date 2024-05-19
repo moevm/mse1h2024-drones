@@ -18,7 +18,7 @@ class ArucoDetector(Node):
         super().__init__('detect_aruco')
         self.subscription = self.create_subscription(
             Image,
-            '/camera',  
+            'Mavic_2_PRO/camera/image_color',  
             self.image_callback,
             10) #take image from topic /Image
 
