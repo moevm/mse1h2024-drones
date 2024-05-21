@@ -12,7 +12,7 @@ class DroneCameraSubscriber(Node):
     def __init__(self):
         super().__init__('drone_camera_subscriber')
         self.image_subscriber = self.create_subscription(
-            ROSImage, 'Mavic_2_PRO/camera/image_color', self.image_callback, 10) # заменить топик на /marked
+            ROSImage, 'marked', self.image_callback, 10) # заменить топик на /marked
         self.bridge = CvBridge()
         self.image_subscriber
 
