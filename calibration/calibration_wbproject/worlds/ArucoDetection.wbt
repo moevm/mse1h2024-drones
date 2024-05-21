@@ -44,25 +44,6 @@ Robot {
   controller "camera_robot"
 }
 Solid {
-  translation 1 0 0.5
-  rotation 0 1 0 1.5708
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColorMap ImageTexture {
-          url [
-            "4x4_1000-228.png"
-          ]
-        }
-      }
-      geometry Box {
-        size 0.01 0.2 0.2
-      }
-    }
-  ]
-  name "marker"
-}
-Solid {
   translation 0.36 0 0.04
   children [
     Shape {
