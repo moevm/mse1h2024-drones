@@ -1,0 +1,62 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/BrushedAluminium.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.09393817637660586 0.039071535860785794 0.9948110544744249 2.356981980839854
+  position 9.149836221851833 -9.396981297908455 2.7600645652333915
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  appearance Parquetry {
+    type "dark strip"
+  }
+}
+Robot {
+  translation 0 0 2
+  children [
+    Shape {
+      appearance BrushedAluminium {
+      }
+      geometry Cone {
+        bottomRadius 0.05
+        height 0.1
+      }
+      castShadows FALSE
+    }
+    Camera {
+      rotation 0 1 0 1.5708
+      width 400
+      height 240
+    }
+  ]
+  name "Calibration_Bot"
+  description "A simple robot for camera calibration."
+  controller "camera_robot"
+}
+Solid {
+  translation 0.36 0 0.04
+  children [
+    Shape {
+      appearance Appearance {
+        texture ImageTexture {
+          url [
+            "chessboard.png"
+          ]
+        }
+      }
+      geometry Plane {
+      }
+    }
+  ]
+  name "chessboard"
+}
