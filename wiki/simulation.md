@@ -2,10 +2,6 @@
 
 Ниже заголовки описывают то что нужно сделать в общем виде. Содержимое же описывает инструкции конкретно для Ubuntu.
 
-## Установить ROS 2 Iron
-
-Подробности описаны [по ссылке](https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html).
-
 ## Установить Webots
 
 Подробности описаны [по ссылке](https://cyberbotics.com/doc/guide/installation-procedure#installing-the-debian-package-with-the-advanced-packaging-tool-apt).
