@@ -22,7 +22,7 @@ jobs:
           python-version: 3.10.12
 
       - name: Install Requirements
-        run: pip install -r requirements.txt
+        run: pip install -r control_nodes/requirements.txt
       
       - name: Install ROS 2
         run: |
