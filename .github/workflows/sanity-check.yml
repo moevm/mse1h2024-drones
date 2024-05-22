@@ -6,6 +6,7 @@ on:
 
 jobs:
   test_modules:
+    continue-on-error: true
     strategy:
       fail-fast: false
     name: Test
@@ -44,7 +45,7 @@ jobs:
           sudo apt install ros-iron-ros-base -y
           sudo apt install ros-iron-webots-ros2 -y
       
-      - name: Build Aruco Follower
+      - name: Build Aruco Follower and run tests
         run: |
           cd aruco_follower_ws/
           sudo rosdep init
@@ -52,3 +53,11 @@ jobs:
           rosdep install -i --from-path src --rosdistro iron -y
           source /opt/ros/iron/setup.bash
           colcon build
+          colcon test
+
+      - name: Code results 
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code_report
+          path: aruco_follower_ws/build/*

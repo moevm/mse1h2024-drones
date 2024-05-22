@@ -24,6 +24,12 @@ $ source /opt/ros/iron/setup.bash
 $ colcon build
 ```
 
+## Тестирование 
+
+Запуск тестов
+
+`$ colcon test`
+
 ## Запустить симуляцию
 
 Открыть новый терминал.
