@@ -25,6 +25,10 @@ K_YAW_P = -0.01
 K_YAW_I = 0
 K_YAW_D = -0.5
 
+K_MARKER_P = -0.125
+K_MARKER_I = 0
+K_MARKER_D = -0.5
+
 TAKEOFF_HIGHT = 0.3
 TARGET_MARKER_X = -0.3
 
@@ -42,6 +46,7 @@ class MavicDriver:
         self.__roll_pid = PIDController(K_ROLL_P, K_ROLL_I, K_ROLL_D)
         self.__pitch_pid = PIDController(K_PITCH_P, K_PITCH_I, K_PITCH_D)
         self.__yaw_pid = PIDController(K_YAW_P, K_YAW_I, K_YAW_D)
+        self.__marker_pid = PIDController(K_MARKER_P, K_MARKER_I, K_MARKER_D)
 
         # Sensors
         self.__gps = self.__robot.getDevice('gps')
@@ -82,12 +87,12 @@ class MavicDriver:
     def __marker_callback(self, marker_msg):
         self.__marker_x = marker_msg.data[0]
     
-    def apply_pid(self, target_z, target_roll, target_pitch, target_yaw, dt = 1):
+    def compute_movement(self, target_z, target_roll, target_pitch, target_yaw, dt = 1):
         # Read sensors
         roll, pitch, yaw = self.__imu.getRollPitchYaw()
         _, _, vertical = self.__gps.getValues()
 
-        z_output = self.__vertical_pid.calculate (vertical, target_z, dt)
+        z_output = self.__vertical_pid.calculate(vertical, target_z, dt)
         roll_output = -self.__roll_pid.calculate(roll, target_roll, dt) + K_ROLL_CONST
         pitch_output = -self.__pitch_pid.calculate(pitch, target_pitch, dt) + K_PITCH_CONST
         yaw_output = self.__yaw_pid.calculate(yaw, target_yaw, dt)
@@ -105,12 +110,12 @@ class MavicDriver:
         return m1, m2, m3, m4
     
     def takeoff(self):
-        vertical_input, roll_input, pitch_input, yaw_input = self.apply_pid(TAKEOFF_HIGHT, 0, 0, 0)
+        vertical_input, roll_input, pitch_input, yaw_input = self.compute_movement(TAKEOFF_HIGHT, 0, 0, 0)
         return MavicDriver.propellers_velocities(vertical_input, roll_input, pitch_input, yaw_input)
     
     def flying(self):
-        target_roll = 0.05 if self.__marker_x > TARGET_MARKER_X else -0.05
-        vertical_input, roll_input, pitch_input, yaw_input = self.apply_pid(TAKEOFF_HIGHT, target_roll, 0, 0)
+        target_roll = self.__marker_pid.calculate(self.__marker_x, TARGET_MARKER_X, 1)
+        vertical_input, roll_input, pitch_input, yaw_input = self.compute_movement(TAKEOFF_HIGHT, target_roll, 0, 0)
         return MavicDriver.propellers_velocities(vertical_input, roll_input, pitch_input, yaw_input)
     
     def step(self):
