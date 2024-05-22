@@ -37,13 +37,13 @@ class DroneGui:
         self.root = root
         self.root.title("aruco tracker")
 
-        self.button_start = Button(root, text="Начать взлетать", width=20, 
+        self.button_start = Button(root, text="Лететь", width=20, 
                             height=5, bg='white', fg='black', command=self.start_demo)
 
         self.button_end = Button(root, text="Снижаться", width=20,
                             height=5, bg='white', fg='black', command=self.end_demo)
 
-        self.button_emergency = Button(root, text="Аварийная остановка", width=20, 
+        self.button_emergency = Button(root, text="Остановиться", width=20, 
                                 height=5, bg='white', fg='black',command=self.emergency)
                 
         self.button_emergency.pack(side=BOTTOM)
@@ -51,7 +51,7 @@ class DroneGui:
         self.button_start.pack(side=BOTTOM)
 
         self.node = create_node('publisher')
-        self.publisher = self.node.create_publisher(Int8, "fly",10)
+        self.publisher = self.node.create_publisher(Int8, "fly", 10)
         self.camera_subscriber = DroneCameraSubscriber()
        
 

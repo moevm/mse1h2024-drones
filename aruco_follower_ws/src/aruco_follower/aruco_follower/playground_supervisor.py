@@ -28,7 +28,7 @@ class PlaygroundSupervisor:
     NAME = 'MARKER'
 
     X_CURVE = [
-        (0, -2), (4, -2.5), (10, -1)
+        (0, -3), (4, -3.5), (10, -2)
     ]
     Y_CURVE = [
         (0, -0.08), (3, -2), (6, -0.08), (7, 0)
