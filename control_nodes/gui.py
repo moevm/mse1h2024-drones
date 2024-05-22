@@ -37,13 +37,13 @@ class DroneGui:
         self.root = root
         self.root.title("aruco tracker")
 
-        self.button_start = Button(root, text="Лететь", width=20, 
+        self.button_start = Button(root, text="Начать демонстрацию", width=20, 
                             height=5, bg='white', fg='black', command=self.start_demo)
 
-        self.button_end = Button(root, text="Снижаться", width=20,
+        self.button_end = Button(root, text="Взлететь", width=20,
                             height=5, bg='white', fg='black', command=self.end_demo)
 
-        self.button_emergency = Button(root, text="Остановиться", width=20, 
+        self.button_emergency = Button(root, text="Остановить пропеллеры", width=20, 
                                 height=5, bg='white', fg='black',command=self.emergency)
                 
         self.button_emergency.pack(side=BOTTOM)

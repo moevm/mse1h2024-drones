@@ -2,8 +2,7 @@
 
 import math
 import rclpy
-from std_msgs.msg import Bool
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, Float32MultiArray
 from .pid_controller import PIDController
 
 K_VERTICAL_THRUST = 68.5   # with this thrust, the drone lifts.
@@ -27,7 +26,7 @@ K_YAW_I = 0
 K_YAW_D = -0.5
 
 TAKEOFF_HIGHT = 0.3
-LIFT_HEIGHT = 1
+TARGET_MARKER_X = -0.3
 
 def clamp(value, value_min, value_max):
     return min(max(value, value_min), value_max)
@@ -68,15 +67,20 @@ class MavicDriver:
             propeller.setVelocity(1)
 
         # State
-        self.__fly = 0
+        self.__fly = 2
+        self.__marker_x = TARGET_MARKER_X
 
         # ROS interface
         rclpy.init(args=None)
         self.__node = rclpy.create_node('simple_mavic_driver')
         self.__node.create_subscription(Int8, 'fly', self.__fly_callback, 1)
+        self.__node.create_subscription(Float32MultiArray, 'marker', self.__marker_callback, 10)
     
     def __fly_callback(self, fly_msg):
         self.__fly = fly_msg.data
+    
+    def __marker_callback(self, marker_msg):
+        self.__marker_x = marker_msg.data[0]
     
     def apply_pid(self, target_z, target_roll, target_pitch, target_yaw, dt = 1):
         # Read sensors
@@ -93,13 +97,21 @@ class MavicDriver:
     def landing(self):
         return 0, 0, 0, 0
     
-    def flying(self, vertical_ref):
-        vertical_input, roll_input, pitch_input, yaw_input = self.apply_pid(vertical_ref, 0, 0, 0)
+    def propellers_velocities(vertical_input, roll_input, pitch_input, yaw_input):
         m1 = K_VERTICAL_THRUST + vertical_input - roll_input + pitch_input - yaw_input
         m2 = K_VERTICAL_THRUST + vertical_input + roll_input + pitch_input + yaw_input
         m3 = K_VERTICAL_THRUST + vertical_input - roll_input - pitch_input + yaw_input
         m4 = K_VERTICAL_THRUST + vertical_input + roll_input - pitch_input - yaw_input
         return m1, m2, m3, m4
+    
+    def takeoff(self):
+        vertical_input, roll_input, pitch_input, yaw_input = self.apply_pid(TAKEOFF_HIGHT, 0, 0, 0)
+        return MavicDriver.propellers_velocities(vertical_input, roll_input, pitch_input, yaw_input)
+    
+    def flying(self):
+        target_roll = 0.05 if self.__marker_x > TARGET_MARKER_X else -0.05
+        vertical_input, roll_input, pitch_input, yaw_input = self.apply_pid(TAKEOFF_HIGHT, target_roll, 0, 0)
+        return MavicDriver.propellers_velocities(vertical_input, roll_input, pitch_input, yaw_input)
     
     def step(self):
         rclpy.spin_once(self.__node, timeout_sec=0)
@@ -109,9 +121,9 @@ class MavicDriver:
         if self.__fly == 2:
             m1, m2, m3, m4 = self.landing()
         elif self.__fly == 0:
-            m1, m2, m3, m4 = self.flying(TAKEOFF_HIGHT)
+            m1, m2, m3, m4 = self.takeoff()
         else:
-            m1, m2, m3, m4 = self.flying(LIFT_HEIGHT)
+            m1, m2, m3, m4 = self.flying()
 
         self.__propellers[0].setVelocity(m1)
         self.__propellers[1].setVelocity(-m2)
